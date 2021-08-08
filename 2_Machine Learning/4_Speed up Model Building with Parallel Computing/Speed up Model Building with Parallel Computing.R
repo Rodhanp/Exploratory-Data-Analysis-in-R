@@ -1,6 +1,7 @@
 #Speed up Model Building with Parallel Computing
 
 #Importing datasets library
+library(datasets)
 library(caret)
 library(randomForest)
 library(e1071)
@@ -71,6 +72,8 @@ stop.time <- proc.time()
 run.time <- stop.time - start.time
 print(run.time)
 
+#Time taken without parallel computing for Hyperparameter tuning is 57.71 seconds
+
 # Using doParallel
 
 library(doParallel) 
@@ -89,3 +92,17 @@ run.time <- stop.time - start.time
 print(run.time)
 
 stopCluster(cl)
+#Time taken with parallel computing for Hyperparameter tuning is 25.49 seconds i.e 2.2 times faster than normal computing
+
+##############################
+#Apply Model for Prediction
+Model.training <- predict(Model,TrainingSet) #Prediction on training set
+
+#Model Performance by confusion matrix
+ModelPerformance <- confusionMatrix(Model.training, TrainingSet$Y)
+print(ModelPerformance)
+
+#Feature Importance
+Importance <- varImp((Model))
+plot(Importance)
+plot(Importance,col="red",top = 25)
